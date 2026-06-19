@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, JetBrains_Mono } from "next/font/google";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import "./globals.css";
 
 // Serif display wordmark — held large and quiet. Light weights only.
@@ -32,7 +34,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${jetbrains.variable}`}>
       <body className="bg-dark-void-1 font-mono text-dark-ink antialiased">
-        {children}
+        <SiteHeader />
+        <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
   );

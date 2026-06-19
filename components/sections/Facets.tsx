@@ -83,8 +83,14 @@ export function Facets() {
       ref={root}
       className="relative mx-auto grid max-w-6xl gap-12 px-6 py-24 sm:px-10 md:grid-cols-[0.9fr_1.1fr]"
     >
+      {/* faint iridescent glass texture — kept low; paints nothing until present */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-20 mix-blend-screen"
+        style={{ backgroundImage: "url('/sections/facets-grain.webp')" }}
+      />
       {/* sticky tracker — the lead facet, warm under the eye */}
-      <div className="md:sticky md:top-0 md:h-screen md:self-start">
+      <div className="relative z-10 md:sticky md:top-0 md:h-screen md:self-start">
         <div className="flex h-full flex-col justify-center">
           <p className="mb-6 text-[0.7rem] uppercase tracking-[0.4em] text-dark-muted">
             Five facets, one light
@@ -115,7 +121,7 @@ export function Facets() {
       </div>
 
       {/* the chorus — each facet, self-contained */}
-      <div className="flex flex-col">
+      <div className="relative z-10 flex flex-col">
         {FACETS.map((f) => (
           <article
             key={f.n}

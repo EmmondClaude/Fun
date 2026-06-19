@@ -44,7 +44,13 @@ export function Manifesto() {
       ref={root}
       className="relative mx-auto flex min-h-[80vh] max-w-5xl items-center px-6 py-32 sm:px-10"
     >
-      <p className="font-display text-[clamp(1.9rem,5vw,4rem)] font-light leading-[1.18] tracking-[-0.01em] text-dark-ink">
+      {/* screen-blend accent — paints nothing until the asset exists */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-40 mix-blend-screen"
+        style={{ backgroundImage: "url('/sections/manifesto-veil.webp')" }}
+      />
+      <p className="relative z-10 font-display text-[clamp(1.9rem,5vw,4rem)] font-light leading-[1.18] tracking-[-0.01em] text-dark-ink">
         {LINE.split(" ").map((word, i) => (
           <span key={`${word}-${i}`} className="mf-word inline-block">
             {word}

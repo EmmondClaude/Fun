@@ -1,7 +1,8 @@
 "use client";
 
+import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { Component, type ReactNode, Suspense, useMemo, useRef } from "react";
 import * as THREE from "three";
 
 const vertexShader = /* glsl */ `
@@ -18,8 +19,8 @@ const vertexShader = /* glsl */ `
 `;
 
 // Fresnel rim split into the spectrum around the silhouette (the prism doing its
-// one job: one white beam, refracted), a thin chromatic dispersion fringe, and a
-// single travelling specular so the surface reads as wet glass — not paint.
+// one job), a thin chromatic dispersion fringe, and a travelling specular so the
+// surface reads as wet glass — not paint.
 const fragmentShader = /* glsl */ `
   uniform float uTime;
   uniform float uPower;
@@ -47,13 +48,9 @@ const fragmentShader = /* glsl */ `
     float fres = 1.0 - clamp(dot(normalize(vWorldNormal), normalize(vViewDir)), 0.0, 1.0);
     float rim = pow(fres, uPower);
 
-    // hue swept around the silhouette by the view-space normal angle — light
-    // splitting along the edge, in the one true order
     float ang = atan(vn.y, vn.x) / 6.28318530718 + 0.5;
     float base = ang + uTime * 0.02;
 
-    // chromatic dispersion: sample the spectrum at three tiny offsets and bias
-    // each toward its channel, so the rim shows a thin refracted fringe
     float disp = 0.06 + rim * 0.10;
     vec3 col =
         spectrum(base - disp) * vec3(1.0, 0.35, 0.25)
@@ -61,12 +58,11 @@ const fragmentShader = /* glsl */ `
       + spectrum(base + disp) * vec3(0.25, 0.35, 1.0);
     col *= 0.85;
 
-    // one travelling specular hotspot — the wet, lit highlight
     vec3 lightDir = normalize(vec3(0.6, 0.8, 0.7));
     vec3 ref = reflect(-normalize(vViewDir), normalize(vWorldNormal));
     float spec = pow(max(dot(ref, lightDir), 0.0), 22.0);
 
-    vec3 body = vec3(0.043, 0.035, 0.067); // ~ void-1, the dark glass interior
+    vec3 body = vec3(0.043, 0.035, 0.067);
     vec3 color = body + col * rim * uIntensity + vec3(0.55, 0.82, 1.0) * spec * 0.6;
     color *= uAppear;
 
@@ -75,17 +71,22 @@ const fragmentShader = /* glsl */ `
   }
 `;
 
+const GLB_URL = "/hero/prism.glb";
+
 /**
- * The reactive prism. An icosahedron lit by a single refracted beam: the rim
- * splits the one true spectrum around the silhouette, a thin dispersion fringe
- * trails it, and a travelling specular keeps the glass wet.
- *
- * Motion has weight. Pointer input is eased toward a target with a
- * frame-rate-independent decay `1 - pow(c, dt)` (no snap, real inertia); a slow
- * idle drift keeps the form breathing; and on mount it eases up from nothing
- * (scale + brightness) so the prism *arrives* rather than pops in.
+ * The body of the prism: geometry + the fresnel→spectrum glass shader + all of
+ * the motion (pointer inertia, idle drift, mount intro). Geometry is injected so
+ * the same material/behaviour drives either the generated `prism.glb` mesh or
+ * the procedural icosahedron fallback. `baseScale` normalizes an arbitrary GLB
+ * to roughly the icosahedron's footprint.
  */
-export function Crystal() {
+function CrystalBody({
+  geometry,
+  baseScale = 1,
+}: {
+  geometry?: THREE.BufferGeometry | null;
+  baseScale?: number;
+}) {
   const mesh = useRef<THREE.Mesh>(null);
   const matRef = useRef<THREE.ShaderMaterial>(null);
   const rot = useRef({ x: 0, y: 0 });
@@ -102,27 +103,22 @@ export function Crystal() {
   );
 
   useFrame((state, delta) => {
-    const dt = Math.min(delta, 0.05); // clamp so a tab-return doesn't fling it
+    const dt = Math.min(delta, 0.05);
     const t = state.clock.elapsedTime;
 
-    // intro: ease 0 → 1 (frame-rate-independent), drives scale + brightness
     appear.current += (1 - appear.current) * (1 - Math.pow(0.02, dt));
     const a = appear.current;
 
-    // pointer target (normalized -1..1) + idle drift
     const targetY = state.pointer.x * 0.55 + Math.sin(t * 0.18) * 0.12;
     const targetX = -state.pointer.y * 0.4 + Math.cos(t * 0.14) * 0.08;
-    const easeY = 1 - Math.pow(0.0006, dt);
-    const easeX = 1 - Math.pow(0.0012, dt);
-    rot.current.y += (targetY - rot.current.y) * easeY;
-    rot.current.x += (targetX - rot.current.x) * easeX;
+    rot.current.y += (targetY - rot.current.y) * (1 - Math.pow(0.0006, dt));
+    rot.current.x += (targetX - rot.current.x) * (1 - Math.pow(0.0012, dt));
 
     if (mesh.current) {
       mesh.current.rotation.y = rot.current.y;
       mesh.current.rotation.x = rot.current.x;
       mesh.current.rotation.z = t * 0.04;
-      const s = 0.82 + a * 0.18; // 0.82 → 1.0
-      mesh.current.scale.setScalar(s);
+      mesh.current.scale.setScalar((0.82 + a * 0.18) * baseScale);
     }
     if (matRef.current) {
       matRef.current.uniforms.uTime.value = t;
@@ -131,8 +127,12 @@ export function Crystal() {
   });
 
   return (
-    <mesh ref={mesh} scale={0.82}>
-      <icosahedronGeometry args={[1.35, 0]} />
+    <mesh ref={mesh} scale={0.82 * baseScale}>
+      {geometry ? (
+        <primitive object={geometry} attach="geometry" />
+      ) : (
+        <icosahedronGeometry args={[1.35, 0]} />
+      )}
       <shaderMaterial
         ref={matRef}
         vertexShader={vertexShader}
@@ -145,3 +145,62 @@ export function Crystal() {
     </mesh>
   );
 }
+
+/** Loads the generated mesh, centers + normalizes it, drives it with the shader. */
+function PrismCrystal() {
+  const gltf = useGLTF(GLB_URL);
+
+  const geometry = useMemo(() => {
+    let found: THREE.BufferGeometry | undefined;
+    gltf.scene.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!found && m.isMesh && m.geometry) found = m.geometry;
+    });
+    if (!found) return null;
+    const g = found.clone();
+    g.center();
+    g.computeBoundingSphere();
+    return g;
+  }, [gltf]);
+
+  const baseScale =
+    geometry?.boundingSphere && geometry.boundingSphere.radius > 0
+      ? 1.35 / geometry.boundingSphere.radius
+      : 1;
+
+  return <CrystalBody geometry={geometry} baseScale={baseScale} />;
+}
+
+/**
+ * If the GLB is missing or fails to parse, fall back to the procedural
+ * icosahedron — the prism.glb is an upgrade, never a dependency.
+ */
+class GLBBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
+
+/**
+ * The reactive prism (Plane 2 — the lead). Tries the generated `prism.glb`;
+ * while it loads, and if it ever fails, the procedural icosahedron stands in
+ * with the identical shader and motion.
+ */
+export function Crystal() {
+  return (
+    <GLBBoundary fallback={<CrystalBody />}>
+      <Suspense fallback={<CrystalBody />}>
+        <PrismCrystal />
+      </Suspense>
+    </GLBBoundary>
+  );
+}
+
+useGLTF.preload(GLB_URL);

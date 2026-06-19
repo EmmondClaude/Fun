@@ -5,6 +5,7 @@ import { Component, type ReactNode } from "react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { HeroCopy } from "./HeroCopy";
 import { HeroPoster } from "./HeroPoster";
+import { VideoPlate } from "./VideoPlate";
 
 // 3D is client-only. ssr:false keeps three out of the server bundle; the poster
 // is the placeholder while the canvas chunk loads.
@@ -47,11 +48,17 @@ export function Hero() {
       {reduced ? (
         <HeroPoster />
       ) : (
-        <CanvasBoundary>
-          <HeroCanvas />
-        </CanvasBoundary>
+        <>
+          {/* Plane 1 — ambient video chorus, behind everything */}
+          <VideoPlate />
+          {/* Plane 2 — the reactive prism, the lead */}
+          <CanvasBoundary>
+            <HeroCanvas />
+          </CanvasBoundary>
+        </>
       )}
 
+      {/* Plane 3 — type, always real DOM */}
       <HeroCopy reduced={reduced} />
 
       <Overlays />

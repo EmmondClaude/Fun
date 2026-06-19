@@ -15,6 +15,13 @@ export function HeroPoster() {
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 bg-void"
     >
+      {/* The generated still, if present, sits on top of the CSS prism below.
+          A missing file paints nothing (no broken image), so the CSS fallback
+          shows through — progressive enhancement, drop in public/hero/. */}
+      <div
+        className="absolute inset-0 z-[1] bg-cover bg-center"
+        style={{ backgroundImage: "url('/hero/hero-poster.webp')" }}
+      />
       {/* charged negative space — a soft bloom behind the form */}
       <div
         className="absolute left-1/2 top-[42%] h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-3xl"

@@ -1,13 +1,16 @@
-# Afterdark Hero — Refracted Dark
+# Refracta — Refracted Dark
+
+*By Blaque Lyon.*
 
 A standalone, reactive hero page built to the **Refracted Dark** philosophy:
 *one light source, refracted.* A glass prism floats in a breathing void; light
-is sampled from a single spectrum and leaked at the fresnel rim so the
-silhouette glows in the brand ramp. The whole thing must be beautiful frozen —
-the still frame is the poster.
+is split into the spectrum around its silhouette, glowing through controlled,
+thresholded bloom, while a faint chromatic-dispersion fringe keeps it feeling
+refracted. The whole thing must be beautiful frozen — the still frame is the
+poster.
 
-See `AFTERDARK-DESIGN-PHILOSOPHY.md` for the worldview and `REPO-SPEC.md` for
-the build brief.
+See `AFTERDARK-DESIGN-PHILOSOPHY.md` for the worldview, `REPO-SPEC.md` for the
+build brief, and `HIGGSFIELD-ASSETS.md` for the generated-asset pack spec.
 
 ## Stack
 

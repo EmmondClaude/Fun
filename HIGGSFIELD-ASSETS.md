@@ -1,11 +1,17 @@
-# HIGGSFIELD-ASSETS — Afterdark asset pack brief
+# HIGGSFIELD-ASSETS — Refracta asset pack brief
 
 Hand this file to cowork / Higgsfield. It is a complete brief to generate **one
-zipped asset pack** for the Afterdark "Refracted Dark" hero page. Produce every
-file listed in §4, named exactly as written, in the folder structure of §5, and
-return them in a single `afterdark-assets.zip`. The files drop straight into the
-site's `public/` directory and are already wired in code — names and dimensions
-must match.
+zipped asset pack** for **Refracta** — the "Refracted Dark" hero page by Blaque
+Lyon. Produce every file listed in §4, named exactly as written, in the folder
+structure of §5, and return them in a single `refracta-assets.zip`. The files
+drop straight into the site's `public/` directory and are already wired in code —
+names and dimensions must match.
+
+> These assets must match the **live render**: a glass prism in which a single
+> white beam is refracted into the spectrum *around its silhouette*, lifted by
+> controlled, thresholded **bloom**, trailed by a thin **chromatic-dispersion
+> fringe**, with one travelling wet **specular** highlight. Read §2 carefully —
+> this is not a generic neon look; it is one light, split.
 
 ---
 
@@ -35,8 +41,8 @@ ink     #F4F1FF   (text only — used in the OG card)
 ```
 
 **Spectrum order, always:** `cyan → cyan-l → violet → magenta → ember`.
-Color appears **only** as thin refracted highlights against the void. No greens,
-yellows, oranges, teals-outside-cyan, warm tungsten, or pastels. Backgrounds are
+Color appears **only** as refracted light against the void. No greens, yellows,
+oranges, teals-outside-cyan, warm tungsten, or pastels. Backgrounds are
 near-black (`#07060B`–`#141121`), never pure `#000000` (it bands).
 
 ---
@@ -44,20 +50,23 @@ near-black (`#07060B`–`#141121`), never pure `#000000` (it bands).
 ## 2. Style preamble (prepend to every generation prompt)
 
 > Abstract refracted light in a deep near-black void (#07060B to #141121, never
-> flat black). A single white light source bent through unseen glass, splitting
-> into thin spectral highlights — cyan #22E6FF, pale cyan #7FF0FF, violet
-> #8B5CF6, magenta #FF2E97, deep ember #C70E6E, in that order. Glassy, wet, lit,
-> iridescent oil-slick sheen, fresnel rim glints, volumetric caustics. Cinematic,
-> meticulously crafted, controlled and thresholded glow — gorgeous, never garish.
-> Vast negative space, one dominant gesture surrounded by stillness. 8-bit sRGB.
+> flat black). A single white light source bent through unseen glass and **split
+> into the spectrum** — cyan #22E6FF, pale cyan #7FF0FF, violet #8B5CF6, magenta
+> #FF2E97, deep ember #C70E6E, **in that order, swept around the form's
+> silhouette**. Glassy, wet, lit, iridescent oil-slick sheen, fresnel rim glints,
+> a **thin chromatic-dispersion fringe** at the edges, one travelling specular
+> hotspot, **soft controlled bloom only on the brightest rim** (thresholded,
+> earned, never a uniform haze). Cinematic, meticulously crafted — gorgeous,
+> never garish. Vast negative space, one dominant gesture surrounded by
+> stillness. 8-bit sRGB.
 
 **Negative prompt (every asset):**
 
 > text, words, letters, watermark, logo, signature, UI, faces, people, hands,
 > recognizable objects, product, room, landscape, sky, daylight, sunlight, warm
 > tungsten, green, yellow, orange, teal, brown, pastel, flat black #000000,
-> banding, posterization, noise, jpeg artifacts, low resolution, blurry, busy,
-> cluttered, five colors fighting each other.
+> uniform glow, blown-out bloom, banding, posterization, noise, jpeg artifacts,
+> low resolution, blurry, busy, cluttered, five colors fighting each other.
 
 ---
 
@@ -69,8 +78,10 @@ near-black (`#07060B`–`#141121`), never pure `#000000` (it bands).
   is required.
 - **Overlay assets** (the section accents, §4.3) are composed on a **pure-black
   field** so they can be dropped in with `mix-blend-mode: screen` (black falls
-  away, only the light remains). Alternatively deliver as transparent PNG — but
-  black-field WebP is preferred and lighter.
+  away, only the light remains). Transparent PNG is acceptable, but black-field
+  WebP is preferred and lighter.
+- **Bloom is thresholded:** glow only off the brightest edges; the body and
+  background stay dark and clean. No global bloom or fog.
 - **No audio** on any video.
 - Hit the file-size budgets — these load on a hero, weight matters.
 
@@ -80,14 +91,15 @@ near-black (`#07060B`–`#141121`), never pure `#000000` (it bands).
 
 ### 4.1 Hero ambient loop  →  `hero-loop.webm` + `hero-loop.mp4`
 
-The faint, drifting chorus *behind* the live 3D crystal and the headline — it
+The faint, drifting chorus *behind* the live 3D prism and the headline — it
 deepens the void, it never competes. Slow volumetric caustics and thin spectral
-beams bending through unseen glass; mostly darkness, light only at the edges.
+beams bending through unseen glass; mostly darkness, light only at the edges, with
+the spectrum splitting in order as the light moves.
 
 - **Content prompt:** *(style preamble) + "slow drifting volumetric light
   caustics and thin refracted spectral beams sweeping through a deep black void,
-  no central object, light pooling and bending at the frame edges, extremely
-  slow and weighted motion, hypnotic, seamless."*
+  no central object, light pooling and bending at the frame edges with a faint
+  dispersion fringe, extremely slow and weighted motion, hypnotic, seamless."*
 - **Aspect / resolution:** 16:9, **1920×1080**.
 - **Duration:** 10s, **seamless loop** (first frame must equal last frame — no
   visible cut or pop).
@@ -102,8 +114,9 @@ beams bending through unseen glass; mostly darkness, light only at the edges.
 
 The frozen hero — what reduced-motion, no-WebGL and weak-GPU visitors see. It
 **must be beautiful on its own**; it is effectively the poster of the whole page.
-Export the single most striking frame of the §4.1 loop (or generate to match),
-with one clear refracted-glass gesture and the spectrum glinting at its rim.
+A single faceted glass prism (icosahedron-like) centered, the spectrum swept
+around its silhouette in order, soft thresholded bloom on the rim, a thin
+dispersion fringe, one wet specular glint.
 
 - **Aspect / resolution:** 16:9, **1920×1080**.
 - **Format / budget:** WebP, quality ~82, **≤ 400 KB**.
@@ -134,9 +147,10 @@ if cheap; the 16:9 master will be used as fallback otherwise.
 The link-preview card. This one **does** carry text.
 
 - **Size:** exactly **1200×630** (the OG standard).
-- **Content:** the hero refracted-glass composition on the void, with the wordmark
-  **"Afterdark"** (serif, light, in `#F4F1FF`) and a smaller line **"Refracted
-  Dark — one light, refracted"** beneath it. A thin spectrum rule as accent.
+- **Content:** the hero refracted-prism composition on the void, with the wordmark
+  **"Refracta"** (serif, light, in `#F4F1FF`), a smaller line **"Refracted Dark —
+  one light, refracted"** beneath it, and **"Blaque Lyon"** small in a corner. A
+  thin spectrum rule as accent.
 - **Format / budget:** PNG (or high-quality JPG), **≤ 1 MB**. sRGB.
 - Keep text well inside a 1080×510 safe area (platforms crop edges).
 
@@ -144,11 +158,11 @@ The link-preview card. This one **does** carry text.
 
 ## 5. Zip structure (must match exactly)
 
-Return `afterdark-assets.zip` with this layout. It mirrors the site's `public/`
+Return `refracta-assets.zip` with this layout. It mirrors the site's `public/`
 folder, so the contents are copied in 1:1:
 
 ```
-afterdark-assets/
+refracta-assets/
   hero/
     hero-loop.webm
     hero-loop.mp4
@@ -170,16 +184,20 @@ afterdark-assets/
 ## 6. Acceptance checklist
 
 - [ ] Every required file from §4 present, named exactly, in the §5 structure.
+- [ ] The spectrum is **swept in order around the form** (not a flat tint), with a
+      thin **dispersion fringe** and **thresholded bloom** only on the rim.
 - [ ] Only spectrum-order hues appear; no green/yellow/orange/warm casts.
-- [ ] Backgrounds near-black (`#07060B`–`#141121`), no flat `#000000`, no banding.
+- [ ] Backgrounds near-black (`#07060B`–`#141121`), no flat `#000000`, no banding,
+      no uniform/blown-out glow.
 - [ ] Hero loop is **seamless** (first frame == last) and reads well at 25–40%
       opacity over the void.
-- [ ] No baked text anywhere except `og-image.png`.
+- [ ] No baked text anywhere except `og-image.png` (wordmark "Refracta").
 - [ ] Section accents are on pure black, clean under `screen` blend.
 - [ ] File-size budgets met (hero videos ≤ 4 MB each, poster ≤ 400 KB, accents ≤
       250 KB, OG ≤ 1 MB).
 - [ ] sRGB / 8-bit; motion is slow and decelerating, nothing linear or flashing.
 
 When the zip is back, I'll unpack it into `public/`, wire the loop + poster into
-the hero (with the reduced-motion / no-WebGL gates intact), layer the accents
-into the sections at low opacity, and add the OG meta tags.
+the hero (with the reduced-motion / no-WebGL gates and the postprocessing bloom
+intact), layer the accents into the sections at low opacity, and confirm the OG
+card resolves.

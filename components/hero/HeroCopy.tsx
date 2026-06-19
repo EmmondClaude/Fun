@@ -43,7 +43,7 @@ export function HeroCopy({ reduced }: { reduced: boolean }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.05, ease: EXPO }}
       >
-        Afterdark — one light, refracted
+        Refracta — one light, refracted
       </motion.p>
 
       {/* the wordmark — serif display, held large and quiet */}

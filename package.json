@@ -1,8 +1,8 @@
 {
-  "name": "afterdark-hero",
+  "name": "refracta",
   "version": "0.1.0",
   "private": true,
-  "description": "Afterdark hero — Refracted Dark, one light source refracted. Next.js 15 + R3F.",
+  "description": "Refracta — Refracted Dark, one light source refracted. By Blaque Lyon. Next.js 15 + R3F.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^9.0.0",
+    "@react-three/postprocessing": "^3.0.4",
     "gsap": "^3.12.5",
     "lenis": "^1.1.17",
     "motion": "^12.0.0",
